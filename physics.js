@@ -40,8 +40,18 @@ class Sprite {
         );
     }
 
-    update(inputHandler) {
+    update(inputHandler, player, deltaTime) {
         inputHandler.handleInput()
+        //actions animation
+        if (!inputHandler.keys.up.pressed && !inputHandler.keys.down.pressed && !inputHandler.keys.left.pressed && !inputHandler.keys.right.pressed) {
+            player.idle()
+        }
+        if (inputHandler.keys.up.pressed == true || inputHandler.keys.down.pressed == true) {
+            player.moveUpDown(deltaTime)
+        }
+        if (inputHandler.keys.shoot.pressed) {
+            player.shoot(deltaTime)
+        }
     }
 }
 
@@ -99,6 +109,9 @@ class InputHandler {
                 pressed: false,
                 lastKey: false
             },
+            shoot: {
+                pressed: false,
+            }
         };
     }
     handleInput() {
@@ -115,6 +128,8 @@ class InputHandler {
             }
             else if (e.key === "d" || e.key === "D" || e.key === "ArrowRight") {
                 this.keys.right.pressed = true;
+            } else if (e.key === " ") {
+                this.keys.shoot.pressed = true
             }
         });
 
@@ -134,6 +149,8 @@ class InputHandler {
             else if (e.key === "d" || e.key === "D" || e.key === "ArrowRight") {
                 this.keys.right.pressed = false;
                 this.keys.right.lastKey = false;
+            } else if (e.key === " ") {
+                this.keys.shoot.pressed = false
             }
         });
 
@@ -217,5 +234,54 @@ class InputHandler {
             })
             this.keys.right.lastKey = true
         }
+    }
+}
+
+class Player {
+    constructor(playerSprite, inputHandler) {
+        this.playerSprite = playerSprite
+        this.inputHandler = inputHandler
+        this.fps = 6
+        this.frameTimer = 0
+        this.frameInterval = 1000 / this.fps
+    }
+    idle() {
+        this.playerSprite.frames.current = 0
+        this.playerSprite.layers.current = 0
+    }
+    moveUpDown(deltaTime) {
+        if (this.inputHandler.keys.up.pressed || this.inputHandler.keys.down.pressed) {
+            if (this.frameTimer > this.frameInterval) {
+                if (this.playerSprite.frames.current >= this.playerSprite.frames.max - 1) {
+                    this.playerSprite.frames.current = 0
+                }
+                this.playerSprite.frames.current++
+                this.frameTimer = 0
+            } else {
+                this.frameTimer += deltaTime
+            }
+        }
+    }
+    moveLeftRight() {
+
+    }
+
+    shoot(deltaTime) {
+        this.playerSprite.layers.current = 1
+        if (this.inputHandler.keys.shoot.pressed) {
+            if (this.frameTimer > this.frameInterval) {
+                if (this.playerSprite.frames.current >= this.playerSprite.frames.max - 1) {
+                    this.playerSprite.frames.current = 0
+                }
+                this.playerSprite.frames.current++
+                this.frameTimer = 0
+            } else {
+                this.frameTimer += deltaTime
+            }
+        }
+    }
+
+    takeDamage() {
+
     }
 }
