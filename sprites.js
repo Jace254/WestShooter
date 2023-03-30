@@ -39,7 +39,6 @@ let ammoBarY;
 for (let i = 0; i < 3; i++) {
     const ammoImage = new Image();
     ammoImage.src = './assets/ammo.png'
-    console.log(lifeBarY)
     ammoBarY = canvas.height / 8 - ammoImage.height / 3 + lifeBarY
     const ammoSprite = new Sprite({
         position: {
@@ -88,6 +87,10 @@ const filterSprite = new Sprite({
 })
 
 const platforms = []
+let centerPlatform = {
+    x: null,
+    y: null
+}
 
 for (let i = 1; i <= 9; i++) {
     const platformImage = new Image();
@@ -107,11 +110,14 @@ for (let i = 1; i <= 9; i++) {
         (center) ? (canvas.height / 2 - platformImage.height / 16) :
             (canvas.height / 2 - platformImage.height / 16) + platformImage.height / 2
 
-
+    centerPlatform = {
+        x: canvas.width / 4 - platformImage.width / 2,
+        y: canvas.height / 2 - platformImage.height / 16
+    }
     const platformSprite = new Sprite({
         position: {
             x: x,
-            y: y
+            y: y + 75
         },
         image: platformImage,
         frames: {
@@ -132,7 +138,7 @@ leftPlayerImage.src = "./assets/left_shooter.png";
 const leftPlayerSprite = new Sprite({
     position: {
         x: canvas.width / 4 - leftPlayerImage.width / 5 / 2,
-        y: canvas.height / 2 - leftPlayerImage.height / 2 / 2,
+        y: canvas.height / 2 - leftPlayerImage.height / 2 / 2 + 75,
     },
     image: leftPlayerImage,
     frames: {
