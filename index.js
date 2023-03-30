@@ -11,12 +11,15 @@ const animate = (timeStamp) => {
     c.clearRect(0, 0, canvas.width, canvas.height);
     c.fillRect(0, 0, canvas.width, canvas.height);
     //ui
+    leftUIGroup.lifeBar.map(l => l.draw())
+    leftUIGroup.ammoBar.map(a => a.draw())
+    leftUIGroup.bulletBar.map(b => b.draw())
     platforms.map(p => p.draw())
     //players
     leftPlayerSprite.draw();
     //movement
     leftPlayerSprite.update(playerInputHandler, leftPlayer, deltaTime)
-    backgroundSprite.draw()
+    filterSprite.draw()
 };
 animate(0);
 

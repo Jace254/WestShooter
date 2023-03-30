@@ -7,17 +7,84 @@ canvas.height = 404;
 c.fillStyle = "#222034";
 c.fillRect(0, 0, canvas.width, canvas.height);
 
-const backgroundImage = new Image();
-backgroundImage.src = './assets/background.png';
-backgroundImage.style = {
-    "opacity": "20%"
+const leftUIGroup = {
+    lifeBar: null,
+    ammoBar: null,
+    bulletBar: null
 }
-const backgroundSprite = new Sprite({
+
+const lifeBar = []
+let lifeBarY;
+
+for (let i = 0; i < 5; i++) {
+    const lifeImage = new Image();
+    lifeImage.src = './assets/life_heart.png'
+    lifeBarY = canvas.height / 8 - lifeImage.height / 2
+    const lifeSprite = new Sprite({
+        position: {
+            x: canvas.width / 2 - lifeImage.width / 2 - (lifeImage.width * i) - 50,
+            y: lifeBarY
+        },
+        image: lifeImage,
+        layers: {
+            max: 3,
+            current: 1
+        }
+    })
+    lifeBar.push(lifeSprite)
+}
+
+const ammoBar = []
+let ammoBarY;
+for (let i = 0; i < 3; i++) {
+    const ammoImage = new Image();
+    ammoImage.src = './assets/ammo.png'
+    console.log(lifeBarY)
+    ammoBarY = canvas.height / 8 - ammoImage.height / 3 + lifeBarY
+    const ammoSprite = new Sprite({
+        position: {
+            x: canvas.width / 2 - ammoImage.width / 2 - (ammoImage.width * i) - 50,
+            y: ammoBarY
+        },
+        image: ammoImage,
+        layers: {
+            max: 3,
+            current: 1
+        }
+    })
+    ammoBar.push(ammoSprite)
+}
+
+const bulletBar = []
+for (let i = 0; i < 4; i++) {
+    const bulletImage = new Image();
+    bulletImage.src = './assets/bullet.png'
+    const bulletSprite = new Sprite({
+        position: {
+            x: canvas.width / 2 - bulletImage.width / 2 - (bulletImage.width * i) - 50,
+            y: canvas.height / 8 - bulletImage.height / 4 + ammoBarY
+        },
+        image: bulletImage,
+        layers: {
+            max: 4,
+            current: 2
+        }
+    })
+    bulletBar.push(bulletSprite)
+}
+
+leftUIGroup.lifeBar = lifeBar
+leftUIGroup.ammoBar = ammoBar
+leftUIGroup.bulletBar = bulletBar
+
+const filterImage = new Image();
+filterImage.src = './assets/background.png';
+const filterSprite = new Sprite({
     position: {
         x: 0,
         y: 0
     },
-    image: backgroundImage
+    image: filterImage
 })
 
 const platforms = []

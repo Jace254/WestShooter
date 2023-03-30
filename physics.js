@@ -43,7 +43,7 @@ class Sprite {
     update(inputHandler, player, deltaTime) {
         inputHandler.handleInput()
         //actions animation
-        if (!inputHandler.keys.up.pressed && !inputHandler.keys.down.pressed && !inputHandler.keys.left.pressed && !inputHandler.keys.right.pressed) {
+        if (!inputHandler.keys.up.pressed && !inputHandler.keys.down.pressed && !inputHandler.keys.left.pressed && !inputHandler.keys.right.pressed && !inputHandler.keys.shoot.pressed) {
             player.idle()
         }
         if (inputHandler.keys.up.pressed == true || inputHandler.keys.down.pressed == true) {
