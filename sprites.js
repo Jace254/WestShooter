@@ -250,7 +250,7 @@ leftPlayerImage.src = "./assets/left_shooter.png";
 const leftPlayerSprite = new Sprite({
     position: {
         x: canvas.width / 4 - leftPlayerImage.width / 5 / 2,
-        y: canvas.height / 2 - leftPlayerImage.height / 3 / 2 + 75,
+        y: canvas.height / 2 - leftPlayerImage.height / 5 / 2 + 75,
     },
     image: leftPlayerImage,
     frames: {
@@ -258,7 +258,7 @@ const leftPlayerSprite = new Sprite({
         current: 0,
     },
     layers: {
-        max: 3,
+        max: 5,
         current: 0,
     },
 });

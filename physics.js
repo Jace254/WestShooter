@@ -43,9 +43,10 @@ class Sprite {
     update(inputHandler, player, deltaTime, UIGroup) {
         inputHandler.handleInput()
         //actions animation
-        if (!inputHandler.keys.up.pressed && !inputHandler.keys.down.pressed && !inputHandler.keys.left.pressed && !inputHandler.keys.right.pressed && !inputHandler.keys.shoot.pressed) {
+        if (!inputHandler.keys.up.pressed && !inputHandler.keys.down.pressed && !inputHandler.keys.left.pressed && !inputHandler.keys.right.pressed && !inputHandler.keys.shoot.pressed && !inputHandler.keys.takeDamage.pressed) {
             player.idle()
             player.fire = false
+            player.damage = false
         }
         if (inputHandler.keys.up.pressed == true || inputHandler.keys.down.pressed == true) {
             player.moveUpDown(deltaTime)
@@ -69,6 +70,20 @@ class Sprite {
                 player.fire = true
             }
 
+        }
+        if (inputHandler.keys.shield.pressed == true && !inputHandler.keys.up.pressed && !inputHandler.keys.down.pressed && !inputHandler.keys.left.pressed && !inputHandler.keys.right.pressed && !inputHandler.keys.shoot.pressed) {
+            player.shield(deltaTime)
+        }
+
+        if (inputHandler.keys.takeDamage.pressed == true) {
+            player.takeDamage(deltaTime)
+            if (player.damage == false) {
+                if (player.playerStats.life > 0) {
+                    player.playerStats.life -= 1
+                    UIGroup.leftLifeBar[player.playerStats.life].layers.current = 2
+                }
+                player.damage = true
+            }
         }
     }
 }
@@ -129,6 +144,12 @@ class InputHandler {
             },
             shoot: {
                 pressed: false,
+            },
+            shield: {
+                pressed: false,
+            },
+            takeDamage: {
+                pressed: false
             }
         };
     }
@@ -148,6 +169,10 @@ class InputHandler {
                 this.keys.right.pressed = true;
             } else if (e.key === " ") {
                 this.keys.shoot.pressed = true
+            } else if (e.key === "b" || e.key === "B") {
+                this.keys.shield.pressed = true;
+            } else if (e.key === "r" || e.key === "R") {
+                this.keys.takeDamage.pressed = true;
             }
         });
 
@@ -169,6 +194,10 @@ class InputHandler {
                 this.keys.right.lastKey = false;
             } else if (e.key === " ") {
                 this.keys.shoot.pressed = false
+            } else if (e.key === "b" || e.key === "B") {
+                this.keys.shield.pressed = false;
+            } else if (e.key === "r" || e.key === "R") {
+                this.keys.takeDamage.pressed = false;
             }
         });
 
@@ -268,6 +297,7 @@ class Player {
             bullets: 4
         }
         this.fire = false
+        this.damage = false
     }
     idle() {
         this.playerSprite.frames.current = 0
@@ -316,7 +346,33 @@ class Player {
         }
     }
 
-    takeDamage() {
+    takeDamage(deltaTime) {
+        this.playerSprite.layers.current = 3
+        if (this.inputHandler.keys.takeDamage.pressed) {
+            if (this.frameTimer > this.frameInterval) {
+                if (this.playerSprite.frames.current >= this.playerSprite.frames.max - 1) {
+                    this.playerSprite.frames.current = 0
+                }
+                this.playerSprite.frames.current++
+                this.frameTimer = 0
+            } else {
+                this.frameTimer += deltaTime
+            }
+        }
+    }
 
+    shield(deltaTime) {
+        this.playerSprite.layers.current = 4;
+        if (this.inputHandler.keys.shield.pressed) {
+            if (this.frameTimer > this.frameInterval) {
+                if (this.playerSprite.frames.current >= this.playerSprite.frames.max - 1) {
+                    this.playerSprite.frames.current = 0
+                }
+                this.playerSprite.frames.current++
+                this.frameTimer = 0
+            } else {
+                this.frameTimer += deltaTime
+            }
+        }
     }
 }
