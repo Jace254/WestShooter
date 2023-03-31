@@ -41,20 +41,20 @@ class Sprite {
     }
 
     update(inputHandler, player, deltaTime, UIGroup) {
-        inputHandler.handleInput()
+        inputHandler.handleInput(player)
         //actions animation
         if (!inputHandler.keys.up.pressed && !inputHandler.keys.down.pressed && !inputHandler.keys.left.pressed && !inputHandler.keys.right.pressed && !inputHandler.keys.shoot.pressed && !inputHandler.keys.takeDamage.pressed) {
             player.idle()
             player.fire = false
             player.damage = false
         }
-        if (inputHandler.keys.up.pressed == true || inputHandler.keys.down.pressed == true) {
+        if (inputHandler.keys.up.pressed == true || inputHandler.keys.down.pressed == true && player.alive) {
             player.moveUpDown(deltaTime)
         }
-        if (inputHandler.keys.left.pressed == true || inputHandler.keys.right.pressed == true) {
+        if (inputHandler.keys.left.pressed == true || inputHandler.keys.right.pressed == true && player.alive) {
             player.moveLeftRight(deltaTime)
         }
-        if (inputHandler.keys.shoot.pressed && player.playerStats.bullets > 0) {
+        if (inputHandler.keys.shoot.pressed && player.playerStats.bullets > 0 && player.alive) {
             player.shoot(deltaTime)
             if (player.fire == false) {
                 if (player.playerStats.bullets > 0) {
@@ -71,19 +71,25 @@ class Sprite {
             }
 
         }
-        if (inputHandler.keys.shield.pressed == true && !inputHandler.keys.up.pressed && !inputHandler.keys.down.pressed && !inputHandler.keys.left.pressed && !inputHandler.keys.right.pressed && !inputHandler.keys.shoot.pressed) {
+        if (inputHandler.keys.shield.pressed == true && !inputHandler.keys.up.pressed && !inputHandler.keys.down.pressed && !inputHandler.keys.left.pressed && !inputHandler.keys.right.pressed && !inputHandler.keys.shoot.pressed && player.alive) {
             player.shield(deltaTime)
         }
 
-        if (inputHandler.keys.takeDamage.pressed == true) {
+        if (inputHandler.keys.takeDamage.pressed == true && player.alive) {
             player.takeDamage(deltaTime)
             if (player.damage == false) {
                 if (player.playerStats.life > 0) {
                     player.playerStats.life -= 1
                     UIGroup.leftLifeBar[player.playerStats.life].layers.current = 2
                 }
+                if (player.playerStats.life == 0) {
+                    player.alive = false;
+                }
                 player.damage = true
             }
+        }
+        if(player.alive === false) {
+            
         }
     }
 }
@@ -122,8 +128,8 @@ class Target {
 }
 
 class InputHandler {
-    constructor(player, targets) {
-        this.player = player
+    constructor(playerSprite, targets) {
+        this.player = playerSprite
         this.targets = targets
         this.keys = {
             up: {
@@ -153,7 +159,7 @@ class InputHandler {
             }
         };
     }
-    handleInput() {
+    handleInput(player) {
         window.addEventListener("keydown", (e) => {
 
             if (e.key === "w" || e.key === "W" || e.key === "ArrowUp") {
@@ -201,85 +207,87 @@ class InputHandler {
             }
         });
 
-        if (this.keys.up.pressed && this.keys.up.lastKey === false) {
-            const position = this.player.position
-            this.targets.map(t => {
-                t.checkTarget()
-                if ((t.sprite.position.x + t.sprite.width / 2) === (this.player.position.x + this.player.width / 2) && t.up) {
-                    t.resetTarget()
-                    if ((t.sprite.position.y + t.sprite.height / 8 - this.player.height / 2 - this.player.position.y) === -62) {
-                        if (this.player.position == position) {
-                            this.player.position = {
-                                x: this.player.position.x,
-                                y: t.sprite.position.y + t.sprite.height / 8 - this.player.height / 2
-                            };
+        if (player.alive) {
+            if (this.keys.up.pressed && this.keys.up.lastKey === false) {
+                const position = this.player.position
+                this.targets.map(t => {
+                    t.checkTarget()
+                    if ((t.sprite.position.x + t.sprite.width / 2) === (this.player.position.x + this.player.width / 2) && t.up) {
+                        t.resetTarget()
+                        if ((t.sprite.position.y + t.sprite.height / 8 - this.player.height / 2 - this.player.position.y) === -62) {
+                            if (this.player.position == position) {
+                                this.player.position = {
+                                    x: this.player.position.x,
+                                    y: t.sprite.position.y + t.sprite.height / 8 - this.player.height / 2
+                                };
+
+                            }
+                        }
+                    } else {
+                        t.resetTarget()
+                    }
+                })
+                this.keys.up.lastKey = true
+            } else if (this.keys.left.pressed && this.keys.left.lastKey === false) {
+                const position = this.player.position
+                this.targets.map(t => {
+                    t.checkTarget()
+                    if ((t.sprite.position.y + t.sprite.height / 8) === (this.player.position.y + this.player.height / 2) && t.left) {
+                        t.resetTarget()
+                        if ((t.sprite.position.x + t.sprite.width / 2 - this.player.width / 2 - this.player.position.x) === -62) {
+                            if (this.player.position == position) {
+                                this.player.position = {
+                                    x: t.sprite.position.x + t.sprite.width / 2 - this.player.width / 2,
+                                    y: this.player.position.y
+                                };
+                            }
 
                         }
+                    } else {
+                        t.resetTarget()
                     }
-                } else {
-                    t.resetTarget()
-                }
-            })
-            this.keys.up.lastKey = true
-        } else if (this.keys.left.pressed && this.keys.left.lastKey === false) {
-            const position = this.player.position
-            this.targets.map(t => {
-                t.checkTarget()
-                if ((t.sprite.position.y + t.sprite.height / 8) === (this.player.position.y + this.player.height / 2) && t.left) {
-                    t.resetTarget()
-                    if ((t.sprite.position.x + t.sprite.width / 2 - this.player.width / 2 - this.player.position.x) === -62) {
-                        if (this.player.position == position) {
-                            this.player.position = {
-                                x: t.sprite.position.x + t.sprite.width / 2 - this.player.width / 2,
-                                y: this.player.position.y
-                            };
+                })
+                this.keys.left.lastKey = true
+            } else if (this.keys.down.pressed && this.keys.down.lastKey === false) {
+                const position = this.player.position
+                this.targets.map(t => {
+                    t.checkTarget()
+                    if ((t.sprite.position.x + t.sprite.width / 2) === (this.player.position.x + this.player.width / 2) && t.down) {
+                        t.resetTarget()
+                        if ((t.sprite.position.y + t.sprite.height / 8 - this.player.height / 2 - this.player.position.y) === 62) {
+                            if (this.player.position == position) {
+                                this.player.position = {
+                                    x: this.player.position.x,
+                                    y: t.sprite.position.y + t.sprite.height / 8 - this.player.height / 2
+                                };
+                            }
                         }
+                    } else {
+                        t.resetTarget()
+                    }
+                })
+                this.keys.down.lastKey = true
+            } else if (this.keys.right.pressed && this.keys.right.lastKey === false) {
+                const position = this.player.position
+                this.targets.map(t => {
+                    t.checkTarget()
+                    if ((t.sprite.position.y + t.sprite.height / 8) === (this.player.position.y + this.player.height / 2) && t.right) {
+                        t.resetTarget()
+                        if ((t.sprite.position.x + t.sprite.width / 2 - this.player.width / 2 - this.player.position.x) === 62) {
+                            if (this.player.position == position) {
+                                this.player.position = {
+                                    x: t.sprite.position.x + t.sprite.width / 2 - this.player.width / 2,
+                                    y: this.player.position.y
+                                };
+                            }
 
-                    }
-                } else {
-                    t.resetTarget()
-                }
-            })
-            this.keys.left.lastKey = true
-        } else if (this.keys.down.pressed && this.keys.down.lastKey === false) {
-            const position = this.player.position
-            this.targets.map(t => {
-                t.checkTarget()
-                if ((t.sprite.position.x + t.sprite.width / 2) === (this.player.position.x + this.player.width / 2) && t.down) {
-                    t.resetTarget()
-                    if ((t.sprite.position.y + t.sprite.height / 8 - this.player.height / 2 - this.player.position.y) === 62) {
-                        if (this.player.position == position) {
-                            this.player.position = {
-                                x: this.player.position.x,
-                                y: t.sprite.position.y + t.sprite.height / 8 - this.player.height / 2
-                            };
                         }
+                    } else {
+                        t.resetTarget()
                     }
-                } else {
-                    t.resetTarget()
-                }
-            })
-            this.keys.down.lastKey = true
-        } else if (this.keys.right.pressed && this.keys.right.lastKey === false) {
-            const position = this.player.position
-            this.targets.map(t => {
-                t.checkTarget()
-                if ((t.sprite.position.y + t.sprite.height / 8) === (this.player.position.y + this.player.height / 2) && t.right) {
-                    t.resetTarget()
-                    if ((t.sprite.position.x + t.sprite.width / 2 - this.player.width / 2 - this.player.position.x) === 62) {
-                        if (this.player.position == position) {
-                            this.player.position = {
-                                x: t.sprite.position.x + t.sprite.width / 2 - this.player.width / 2,
-                                y: this.player.position.y
-                            };
-                        }
-
-                    }
-                } else {
-                    t.resetTarget()
-                }
-            })
-            this.keys.right.lastKey = true
+                })
+                this.keys.right.lastKey = true
+            }
         }
     }
 }
@@ -298,12 +306,14 @@ class Player {
         }
         this.fire = false
         this.damage = false
+        this.alive = true
     }
     idle() {
         this.playerSprite.frames.current = 0
         this.playerSprite.layers.current = 0
     }
     moveUpDown(deltaTime) {
+        this.playerSprite.layers.current = 0
         if (this.inputHandler.keys.up.pressed || this.inputHandler.keys.down.pressed) {
             if (this.frameTimer > this.frameInterval) {
                 if (this.playerSprite.frames.current >= this.playerSprite.frames.max - 1) {
