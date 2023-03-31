@@ -59,13 +59,13 @@ class Sprite {
             if (player.fire == false) {
                 if (player.playerStats.bullets > 0) {
                     player.playerStats.bullets -= 1
-                    UIGroup.leftBulletBar[player.playerStats.bullets].layers.current = 3
+                    UIGroup.bulletBar[player.playerStats.bullets].layers.current = 3
                 }
                 if (player.playerStats.bullets == 0 && player.playerStats.ammo > 0) {
                     player.playerStats.bullets = 4
-                    UIGroup.leftBulletBar.map(b => b.layers.current = 2)
+                    UIGroup.bulletBar.map(b => b.layers.current = 2)
                     player.playerStats.ammo -= 1
-                    UIGroup.leftAmmoBar[player.playerStats.ammo].layers.current = 2
+                    UIGroup.ammoBar[player.playerStats.ammo].layers.current = 2
                 }
                 player.fire = true
             }
@@ -80,7 +80,7 @@ class Sprite {
             if (player.damage == false) {
                 if (player.playerStats.life > 0) {
                     player.playerStats.life -= 1
-                    UIGroup.leftLifeBar[player.playerStats.life].layers.current = 2
+                    UIGroup.lifeBar[player.playerStats.life].layers.current = 2
                 }
                 if (player.playerStats.life == 0) {
                     player.alive = false;
@@ -89,7 +89,7 @@ class Sprite {
             }
         }
         if(player.alive === false) {
-            
+
         }
     }
 }

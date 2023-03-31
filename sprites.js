@@ -19,9 +19,9 @@ const backgroundSprite = new Sprite({
 })
 
 const leftUIGroup = {
-    leftLifeBar: null,
-    leftAmmoBar: null,
-    leftBulletBar: null
+    lifeBar: null,
+    ammoBar: null,
+    bulletBar: null
 }
 
 const leftLifeBar = []
@@ -83,14 +83,14 @@ for (let i = 0; i < 4; i++) {
     leftBulletBar.push(bulletSprite)
 }
 
-leftUIGroup.leftLifeBar = leftLifeBar
-leftUIGroup.leftAmmoBar = leftAmmoBar
-leftUIGroup.leftBulletBar = leftBulletBar
+leftUIGroup.lifeBar = leftLifeBar
+leftUIGroup.ammoBar = leftAmmoBar
+leftUIGroup.bulletBar = leftBulletBar
 
 const rigthUIGroup = {
-    rightLifeBar: null,
-    rightAmmoBar: null,
-    rightBulletBar: null
+    lifeBar: null,
+    ammoBar: null,
+    bulletBar: null
 }
 
 const rightLifeBar = []
@@ -152,9 +152,9 @@ for (let i = 0; i < 4; i++) {
     rightBulletBar.push(bulletSprite)
 }
 
-rigthUIGroup.rightLifeBar = rightLifeBar
-rigthUIGroup.rightAmmoBar = rightAmmoBar
-rigthUIGroup.rightBulletBar = rightBulletBar
+rigthUIGroup.lifeBar = rightLifeBar
+rigthUIGroup.ammoBar = rightAmmoBar
+rigthUIGroup.bulletBar = rightBulletBar
 
 const filterImage = new Image();
 filterImage.src = './assets/filter.png';

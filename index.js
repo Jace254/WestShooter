@@ -13,12 +13,12 @@ const animate = (timeStamp) => {
     backgroundSprite.draw()
     // UI
     //UI groups
-    leftUIGroup.leftLifeBar.map(l => l.draw())
-    leftUIGroup.leftAmmoBar.map(a => a.draw())
-    leftUIGroup.leftBulletBar.map(b => b.draw())
-    rigthUIGroup.rightLifeBar.map(l => l.draw())
-    rigthUIGroup.rightAmmoBar.map(a => a.draw())
-    rigthUIGroup.rightBulletBar.map(b => b.draw())
+    leftUIGroup.lifeBar.map(l => l.draw())
+    leftUIGroup.ammoBar.map(a => a.draw())
+    leftUIGroup.bulletBar.map(b => b.draw())
+    rigthUIGroup.lifeBar.map(l => l.draw())
+    rigthUIGroup.ammoBar.map(a => a.draw())
+    rigthUIGroup.bulletBar.map(b => b.draw())
     //platforms
     leftPlatforms.map(p => p.draw())
     rightPlatforms.map(p => p.draw())
