@@ -40,11 +40,12 @@ class Sprite {
         );
     }
 
-    update(inputHandler, player, deltaTime) {
+    update(inputHandler, player, deltaTime, UIGroup) {
         inputHandler.handleInput()
         //actions animation
         if (!inputHandler.keys.up.pressed && !inputHandler.keys.down.pressed && !inputHandler.keys.left.pressed && !inputHandler.keys.right.pressed && !inputHandler.keys.shoot.pressed) {
             player.idle()
+            player.fire = false
         }
         if (inputHandler.keys.up.pressed == true || inputHandler.keys.down.pressed == true) {
             player.moveUpDown(deltaTime)
@@ -52,8 +53,22 @@ class Sprite {
         if (inputHandler.keys.left.pressed == true || inputHandler.keys.right.pressed == true) {
             player.moveLeftRight(deltaTime)
         }
-        if (inputHandler.keys.shoot.pressed) {
+        if (inputHandler.keys.shoot.pressed && player.playerStats.bullets > 0) {
             player.shoot(deltaTime)
+            if (player.fire == false) {
+                if (player.playerStats.bullets > 0) {
+                    player.playerStats.bullets -= 1
+                    UIGroup.leftBulletBar[player.playerStats.bullets].layers.current = 3
+                }
+                if (player.playerStats.bullets == 0 && player.playerStats.ammo > 0) {
+                    player.playerStats.bullets = 4
+                    UIGroup.leftBulletBar.map(b => b.layers.current = 2)
+                    player.playerStats.ammo -= 1
+                    UIGroup.leftAmmoBar[player.playerStats.ammo].layers.current = 2
+                }
+                player.fire = true
+            }
+
         }
     }
 }
@@ -247,6 +262,12 @@ class Player {
         this.fps = 6
         this.frameTimer = 0
         this.frameInterval = 1000 / this.fps
+        this.playerStats = {
+            life: 6,
+            ammo: 3,
+            bullets: 4
+        }
+        this.fire = false
     }
     idle() {
         this.playerSprite.frames.current = 0

@@ -1,11 +1,22 @@
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 
-canvas.width = 600;
-canvas.height = 404;
+canvas.width = 750;
+canvas.height = 500;
 
-c.fillStyle = "#222034";
+c.fillStyle = "#c77438";
 c.fillRect(0, 0, canvas.width, canvas.height);
+
+
+const backgroundImage = new Image()
+backgroundImage.src = './assets/background.png';
+const backgroundSprite = new Sprite({
+    position: {
+        x: 0,
+        y: 0
+    },
+    image: backgroundImage
+})
 
 const leftUIGroup = {
     leftLifeBar: null,
@@ -146,7 +157,7 @@ rigthUIGroup.rightAmmoBar = rightAmmoBar
 rigthUIGroup.rightBulletBar = rightBulletBar
 
 const filterImage = new Image();
-filterImage.src = './assets/background.png';
+filterImage.src = './assets/filter.png';
 const filterSprite = new Sprite({
     position: {
         x: 0,

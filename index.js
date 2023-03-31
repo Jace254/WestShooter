@@ -10,6 +10,7 @@ const animate = (timeStamp) => {
     lastTime = timeStamp
     c.clearRect(0, 0, canvas.width, canvas.height);
     c.fillRect(0, 0, canvas.width, canvas.height);
+    backgroundSprite.draw()
     // UI
     //UI groups
     leftUIGroup.leftLifeBar.map(l => l.draw())
@@ -25,7 +26,7 @@ const animate = (timeStamp) => {
     //players
     leftPlayerSprite.draw();
     //movement
-    leftPlayerSprite.update(leftPlayerInputHandler, leftPlayer, deltaTime)
+    leftPlayerSprite.update(leftPlayerInputHandler, leftPlayer, deltaTime, leftUIGroup)
     filterSprite.draw()
 };
 animate(0);
