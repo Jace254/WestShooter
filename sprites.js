@@ -87,7 +87,7 @@ leftUIGroup.lifeBar = leftLifeBar
 leftUIGroup.ammoBar = leftAmmoBar
 leftUIGroup.bulletBar = leftBulletBar
 
-const rigthUIGroup = {
+const rightUIGroup = {
     lifeBar: null,
     ammoBar: null,
     bulletBar: null
@@ -152,12 +152,13 @@ for (let i = 0; i < 4; i++) {
     rightBulletBar.push(bulletSprite)
 }
 
-rigthUIGroup.lifeBar = rightLifeBar
-rigthUIGroup.ammoBar = rightAmmoBar
-rigthUIGroup.bulletBar = rightBulletBar
+rightUIGroup.lifeBar = rightLifeBar
+rightUIGroup.ammoBar = rightAmmoBar
+rightUIGroup.bulletBar = rightBulletBar
 
 const filterImage = new Image();
 filterImage.src = './assets/filter.png';
+
 const filterSprite = new Sprite({
     position: {
         x: 0,
@@ -263,12 +264,30 @@ const leftPlayerSprite = new Sprite({
     },
 });
 
+const rightPlayerImage = new Image();
+rightPlayerImage.src = "./assets/right_shooter.png";
+const rightPlayerSprite = new Sprite({
+    position: {
+        x: canvas.width * 3 / 4 - rightPlayerImage.width / 5 / 2,
+        y: canvas.height / 2 - rightPlayerImage.height / 5 / 2 + 75,
+    },
+    image: rightPlayerImage,
+    frames: {
+        max: 5,
+        current: 0,
+    },
+    layers: {
+        max: 5,
+        current: 0,
+    },
+});
+
 const leftTargets = leftPlatforms.map(p => {
     const target = new Target(p,leftPlayerSprite)
     return target
 })
 
 const rightTargets = rightPlatforms.map(p => {
-    const target = new Target(p, leftPlayerSprite)
+    const target = new Target(p, rightPlayerSprite)
     return target
 })

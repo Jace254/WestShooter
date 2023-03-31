@@ -1,5 +1,7 @@
-const leftPlayerInputHandler = new InputHandler(leftPlayerSprite, leftTargets);
+const leftPlayerInputHandler = new InputHandler(leftPlayerSprite, leftTargets, true);
 const leftPlayer = new Player(leftPlayerSprite, leftPlayerInputHandler)
+const rightPlayerInputHandler = new InputHandler(rightPlayerSprite, rightTargets, false);
+const rightPlayer = new Player(rightPlayerSprite, rightPlayerInputHandler)
 
 let lastTime = 0
 
@@ -16,18 +18,20 @@ const animate = (timeStamp) => {
     leftUIGroup.lifeBar.map(l => l.draw())
     leftUIGroup.ammoBar.map(a => a.draw())
     leftUIGroup.bulletBar.map(b => b.draw())
-    rigthUIGroup.lifeBar.map(l => l.draw())
-    rigthUIGroup.ammoBar.map(a => a.draw())
-    rigthUIGroup.bulletBar.map(b => b.draw())
+    rightUIGroup.lifeBar.map(l => l.draw())
+    rightUIGroup.ammoBar.map(a => a.draw())
+    rightUIGroup.bulletBar.map(b => b.draw())
     //platforms
     leftPlatforms.map(p => p.draw())
     rightPlatforms.map(p => p.draw())
 
     //players
     leftPlayerSprite.draw();
+    rightPlayerSprite.draw();
     //movement
-    leftPlayerSprite.update(leftPlayerInputHandler, leftPlayer, deltaTime, leftUIGroup)
-    filterSprite.draw()
+    leftPlayerSprite.update(leftPlayerInputHandler, leftPlayer, deltaTime, leftUIGroup, true)
+    rightPlayerSprite.update(rightPlayerInputHandler, rightPlayer, deltaTime, rightUIGroup, false)
+    // filterSprite.draw()
 };
 animate(0);
 

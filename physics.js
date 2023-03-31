@@ -23,7 +23,6 @@ class Sprite {
                 y: this.position.y - this.height / 2
             }
         };
-
     }
 
     draw() {
@@ -40,7 +39,7 @@ class Sprite {
         );
     }
 
-    update(inputHandler, player, deltaTime, UIGroup) {
+    update(inputHandler, player, deltaTime, UIGroup, left) {
         inputHandler.handleInput(player)
         //actions animation
         if (!inputHandler.keys.up.pressed && !inputHandler.keys.down.pressed && !inputHandler.keys.left.pressed && !inputHandler.keys.right.pressed && !inputHandler.keys.shoot.pressed && !inputHandler.keys.takeDamage.pressed) {
@@ -59,18 +58,27 @@ class Sprite {
             if (player.fire == false) {
                 if (player.playerStats.bullets > 0) {
                     player.playerStats.bullets -= 1
-                    UIGroup.bulletBar[player.playerStats.bullets].layers.current = 3
+                    if (left) {
+                        UIGroup.bulletBar[player.playerStats.bullets].layers.current = 3
+                    } else {
+                        UIGroup.bulletBar[player.playerStats.bullets].layers.current = 1
+                    }
                 }
                 if (player.playerStats.bullets == 0 && player.playerStats.ammo > 0) {
                     player.playerStats.bullets = 4
-                    UIGroup.bulletBar.map(b => b.layers.current = 2)
+                    if (left) {
+                        UIGroup.bulletBar.map(b => b.layers.current = 2)
+                    } else {
+                        UIGroup.bulletBar.map(b => b.layers.current = 0)
+                    }
                     player.playerStats.ammo -= 1
+
                     UIGroup.ammoBar[player.playerStats.ammo].layers.current = 2
                 }
                 player.fire = true
             }
-
         }
+
         if (inputHandler.keys.shield.pressed == true && !inputHandler.keys.up.pressed && !inputHandler.keys.down.pressed && !inputHandler.keys.left.pressed && !inputHandler.keys.right.pressed && !inputHandler.keys.shoot.pressed && player.alive) {
             player.shield(deltaTime)
         }
@@ -88,8 +96,9 @@ class Sprite {
                 player.damage = true
             }
         }
+        
         if(player.alive === false) {
-
+            player.playerSprite.image.className = 'opClass'
         }
     }
 }
@@ -128,9 +137,10 @@ class Target {
 }
 
 class InputHandler {
-    constructor(playerSprite, targets) {
+    constructor(playerSprite, targets, left) {
         this.player = playerSprite
         this.targets = targets
+        this.left = left
         this.keys = {
             up: {
                 pressed: false,
