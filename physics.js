@@ -49,6 +49,9 @@ class Sprite {
         if (inputHandler.keys.up.pressed == true || inputHandler.keys.down.pressed == true) {
             player.moveUpDown(deltaTime)
         }
+        if (inputHandler.keys.left.pressed == true || inputHandler.keys.right.pressed == true) {
+            player.moveLeftRight(deltaTime)
+        }
         if (inputHandler.keys.shoot.pressed) {
             player.shoot(deltaTime)
         }
@@ -262,12 +265,23 @@ class Player {
             }
         }
     }
-    moveLeftRight() {
-
+    moveLeftRight(deltaTime) {
+        this.playerSprite.layers.current = 1
+        if (this.inputHandler.keys.left.pressed || this.inputHandler.keys.right.pressed) {
+            if (this.frameTimer > this.frameInterval) {
+                if (this.playerSprite.frames.current >= this.playerSprite.frames.max - 1) {
+                    this.playerSprite.frames.current = 0
+                }
+                this.playerSprite.frames.current++
+                this.frameTimer = 0
+            } else {
+                this.frameTimer += deltaTime
+            }
+        }
     }
 
     shoot(deltaTime) {
-        this.playerSprite.layers.current = 1
+        this.playerSprite.layers.current = 2
         if (this.inputHandler.keys.shoot.pressed) {
             if (this.frameTimer > this.frameInterval) {
                 if (this.playerSprite.frames.current >= this.playerSprite.frames.max - 1) {
