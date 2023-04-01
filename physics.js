@@ -118,7 +118,6 @@ class Sprite {
             !player.shielded
         ) {
             player.takeDamage(deltaTime, enemy.inputHandler.keys.shoot.pressed);
-            console.log(player.damage);
             if (player.damage === false) {
                 if (player.playerStats.life > 0) {
                   player.playerStats.life -= 1;
