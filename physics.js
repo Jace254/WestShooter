@@ -113,6 +113,14 @@ class Sprite {
       player.shield(deltaTime);
       player.shielded = true;
     }
+    // if (enemy.damage) {
+    //   player.playerStats.bullets += 1
+    //   if (left) {
+    //     UIGroup.bulletBar[player.playerStats.bullets - 1].layers.current = 3;
+    //   } else {
+    //     UIGroup.bulletBar[player.playerStats.bullets - 1].layers.current = 1;
+    //   }
+    // }
 
     if (
       enemy.inputHandler.keys.shoot.pressed &&

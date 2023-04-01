@@ -53,6 +53,6 @@ const animate = (timeStamp) => {
         false,
         leftPlayer
     );
-  // filterSprite.draw()
+  filterSprite.draw()
 };
 animate(0);
