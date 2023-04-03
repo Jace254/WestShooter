@@ -23,6 +23,7 @@ class Sprite {
         y: this.position.y - this.height / 2,
       };
     };
+    this.refilled = false
   }
 
   draw() {
@@ -39,7 +40,14 @@ class Sprite {
     );
   }
 
-  update(inputHandler, player, deltaTime, UIGroup, left, enemy) {
+  update(
+    inputHandler = null,
+    player = null,
+    deltaTime,
+    UIGroup = null,
+    left = false,
+    enemy = null
+  ) {
     inputHandler.handleInput(player);
     //actions animation
     if (
@@ -47,23 +55,27 @@ class Sprite {
       !inputHandler.keys.down.pressed &&
       !inputHandler.keys.left.pressed &&
       !inputHandler.keys.right.pressed &&
-      !inputHandler.keys.shoot.pressed
+      !inputHandler.keys.shoot.pressed 
     ) {
-      player.idle();
-      player.fire = false;
-      player.shielded = false;
+      if(!player.alive){
+        player.die()
+      } else {
+        player.idle();
+        player.fire = false;
+        player.shielded = false;
+      }
     }
     if (!enemy.inputHandler.keys.shoot.pressed) {
       player.damage = false;
     }
     if (
-      inputHandler.keys.up.pressed == true ||
+      (inputHandler.keys.up.pressed == true && player.alive) ||
       (inputHandler.keys.down.pressed == true && player.alive)
     ) {
       player.moveUpDown(deltaTime);
     }
     if (
-      inputHandler.keys.left.pressed == true ||
+      (inputHandler.keys.left.pressed == true && player.alive) ||
       (inputHandler.keys.right.pressed == true && player.alive)
     ) {
       player.moveLeftRight(deltaTime);
@@ -94,11 +106,24 @@ class Sprite {
 
           UIGroup.ammoBar[player.playerStats.ammo].layers.current = 2;
         }
-        // if ((enemy.damage = true)) {
-        //     player.playerStats.bullets += 1;
-        // }
+        this.refilled = false;
+        player.shielded = false;
         player.fire = true;
       }
+    }
+    if ((enemy.damage == true)) {
+      setTimeout(() => {
+        if (!this.refilled) {
+          console.log(this.refilled)
+          player.playerStats.bullets += 1;
+          if (left) {
+            UIGroup.bulletBar[player.playerStats.bullets - 1].layers.current = 2;
+          } else {
+            UIGroup.bulletBar[player.playerStats.bullets - 1].layers.current = 0;
+          }
+          this.refilled = true
+        }
+      }, 350)
     }
 
     if (
@@ -113,21 +138,14 @@ class Sprite {
       player.shield(deltaTime);
       player.shielded = true;
     }
-    // if (enemy.damage) {
-    //   player.playerStats.bullets += 1
-    //   if (left) {
-    //     UIGroup.bulletBar[player.playerStats.bullets - 1].layers.current = 3;
-    //   } else {
-    //     UIGroup.bulletBar[player.playerStats.bullets - 1].layers.current = 1;
-    //   }
-    // }
 
     if (
       enemy.inputHandler.keys.shoot.pressed &&
       player.alive &&
       enemy.playerSprite.position.y === player.playerSprite.position.y &&
       !player.shielded &&
-      enemy.playerStats.bullets > 0
+      enemy.playerStats.bullets > 0 &&
+      enemy.alive
     ) {
       player.takeDamage(deltaTime, enemy.inputHandler.keys.shoot.pressed);
       if (player.damage === false) {
@@ -443,12 +461,16 @@ class Player {
     this.alive = true;
     this.shielded = false;
   }
+  die() {
+    this.playerSprite.frames.current = 0;
+    this.playerSprite.layers.current = 0;  
+  }
   idle() {
     this.playerSprite.frames.current = 0;
-    this.playerSprite.layers.current = 0;
+    this.playerSprite.layers.current = 1;
   }
   moveUpDown(deltaTime) {
-    this.playerSprite.layers.current = 0;
+    this.playerSprite.layers.current = 1;
     if (
       this.inputHandler.keys.up.pressed ||
       this.inputHandler.keys.down.pressed
@@ -468,7 +490,7 @@ class Player {
     }
   }
   moveLeftRight(deltaTime) {
-    this.playerSprite.layers.current = 1;
+    this.playerSprite.layers.current = 2;
     if (
       this.inputHandler.keys.left.pressed ||
       this.inputHandler.keys.right.pressed
@@ -489,7 +511,7 @@ class Player {
   }
 
   shoot(deltaTime) {
-    this.playerSprite.layers.current = 2;
+    this.playerSprite.layers.current = 3;
     if (this.inputHandler.keys.shoot.pressed) {
       if (this.frameTimer > this.frameInterval) {
         if (
@@ -507,7 +529,7 @@ class Player {
   }
 
   takeDamage(deltaTime, enemyShot) {
-    this.playerSprite.layers.current = 3;
+    this.playerSprite.layers.current = 4;
     if (enemyShot) {
       if (this.frameTimer > this.frameInterval) {
         if (
@@ -525,7 +547,7 @@ class Player {
   }
 
   shield(deltaTime) {
-    this.playerSprite.layers.current = 4;
+    this.playerSprite.layers.current = 5;
     if (this.inputHandler.keys.shield.pressed) {
       if (this.frameTimer > this.frameInterval) {
         if (
